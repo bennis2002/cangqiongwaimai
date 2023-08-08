@@ -13,12 +13,10 @@ spring:
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
 
-mybatis:
-  #mapper配置文件
+mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.sky.entity
   configuration:
-    #开启驼峰命名
     map-underscore-to-camel-case: true
 
 logging:
@@ -30,6 +28,14 @@ logging:
         controller: info
 
 sky:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 1234
+    host: 127.0.0.1
+    port: 3306
+    database: skt-take-out
+
   jwt:
     # 设置jwt签名加密时使用的秘钥
     admin-secret-key: itcast
