@@ -79,7 +79,7 @@ public class EmployeeController {
 
     @PostMapping
     @ApiOperation("员工注册")
-    public Result save(@RequestBody EmployeeDTO user) {
+    public Result save(@RequestBody Employee user) {
         log.info("新增员工: {}", user);
         return employeeService.save(user);
     }
@@ -110,7 +110,7 @@ public class EmployeeController {
 
     @PutMapping
     @ApiOperation("员工信息修改")
-    public Result update(@RequestBody EmployeeDTO employeeDTO) {
+    public Result update(@RequestBody Employee employeeDTO) {
         log.info("更新员工信息");
         employeeService.updateEmployee(employeeDTO);
         return Result.success();

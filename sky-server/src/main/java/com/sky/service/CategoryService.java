@@ -12,7 +12,7 @@ public interface CategoryService {
      * 新增分类
      * @param categoryDTO
      */
-    void save(CategoryDTO categoryDTO);
+    void save(Category categoryDTO);
 
     /**
      * 分页查询
@@ -31,7 +31,7 @@ public interface CategoryService {
      * 修改分类
      * @param categoryDTO
      */
-    void update(CategoryDTO categoryDTO);
+    void update(Category categoryDTO);
 
     /**
      * 启用、禁用分类
