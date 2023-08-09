@@ -15,6 +15,11 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void setStatus(Integer status) {
+        stringRedisTemplate.opsForValue().set("SHOP_STATUS", String.valueOf(status));
+    }
 
+    @Override
+    public Integer getStatus() {
+        return Integer.valueOf(stringRedisTemplate.opsForValue().get("SHOP_STATUS"));
     }
 }
