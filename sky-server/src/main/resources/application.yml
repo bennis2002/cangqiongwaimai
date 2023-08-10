@@ -12,7 +12,16 @@ spring:
       url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
-
+  redis:
+    host: ${sky.redis.host}
+    port: ${sky.redis.port}
+    password: ${sky.redis.password}
+    lettuce:
+      pool:
+        max-active: ${sky.redis.lettuce.pool.max-active}
+        max-idle: ${sky.redis.lettuce.pool.max-idle}
+        min-idle: ${sky.redis.lettuce.pool.min-idle}
+        time-between-eviction-runs: ${sky.redis.lettuce.pool.time-between-eviction-runs}
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
@@ -40,13 +49,19 @@ sky:
 
   jwt:
     # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: itcast
+    admin-secret-key: cosh
     # 设置jwt过期时间
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+    user-secret-key: cosh
+    user-token-name: authentication
+    user-ttl: 7200000
   alioss:
     endpoint: ${sky.alioss.endpoint}
     accessKeyId: ${sky.alioss.accessKeyId}
     accessKeySecret: ${sky.alioss.accessKeySecret}
     bucketName: ${sky.alioss.bucketName}
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}

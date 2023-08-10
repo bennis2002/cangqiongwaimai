@@ -11,6 +11,7 @@ import com.sky.vo.DishItemVO;
 import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -60,10 +61,18 @@ public class DishController {
 
     @PutMapping
     @ApiOperation("修改菜品")
-    public Result updateById(@RequestBody DishDTO dishVO){
+    public Result updateById(@RequestBody DishDTO dishVO) {
         log.info("修改菜品");
         dishService.updateDish(dishVO);
 
         return Result.success();
+    }
+
+    @GetMapping("/list")
+    @ApiOperation("根据分类查询")
+    public Result<List<Dish>> queryByCategoryId(Integer categoryId) {
+        log.info("查询分类ID为{}的菜品信息" , categoryId);
+        List<Dish> list = dishService.queryByCategoryId(categoryId);
+        return Result.success(list);
     }
 }

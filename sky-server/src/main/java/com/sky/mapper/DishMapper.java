@@ -21,4 +21,6 @@ public interface DishMapper extends BaseMapper<Dish> {
     Integer countByCategoryId(Long categoryId);
 
     List<DishVO> seleceByPage(DishPageQueryDTO dishPageQueryDTO);
+
+    List<Dish> list(Dish dish);
 }

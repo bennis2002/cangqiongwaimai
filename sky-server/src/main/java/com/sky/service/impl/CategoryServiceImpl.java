@@ -10,6 +10,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.CategoryMapper;
@@ -91,7 +92,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         //查询当前分类是否关联了套餐，如果关联了就抛出业务异常
-        count = setmealMapper.countByCategoryId(id);
+        LambdaQueryWrapper<Setmeal> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(id != null, Setmeal::getCategoryId, id);
+        count = Math.toIntExact(setmealMapper.selectCount(lqw));
         if(count > 0){
             //当前分类下有菜品，不能删除
             throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);

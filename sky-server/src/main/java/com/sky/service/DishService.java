@@ -10,6 +10,8 @@ import com.sky.result.Result;
 import com.sky.vo.DishItemVO;
 import com.sky.vo.DishVO;
 
+import java.util.List;
+
 public interface DishService {
     Result saveWithFlavor(DishDTO dish);
 
@@ -24,4 +26,13 @@ public interface DishService {
     void updateDish(DishDTO dishVO);
 
     void updateFlavor(DishDTO dishDTO);
+
+    /**
+     * 条件查询菜品和口味
+     * @param dish
+     * @return
+     */
+    List<DishVO> listWithFlavor(Dish dish);
+
+    List<Dish> queryByCategoryId(Integer categoryId);
 }

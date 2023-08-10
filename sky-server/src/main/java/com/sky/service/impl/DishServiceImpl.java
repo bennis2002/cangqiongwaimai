@@ -17,6 +17,7 @@ import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishItemVO;
 import com.sky.vo.DishVO;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.BeanUtils;
@@ -139,6 +140,48 @@ public class DishServiceImpl implements DishService {
             item.setDishId(dishDTO.getId());
             dishFlavorMapper.insert(item);
         }
+    }
+
+    /**
+     * 条件查询菜品和口味
+     * @param dish
+     * @return
+     */
+    public List<DishVO> listWithFlavor(Dish dish) {
+        LambdaQueryWrapper<Dish> lqw1 = new LambdaQueryWrapper<>();
+
+        Integer status = dish.getStatus();
+        Long categoryId = dish.getCategoryId();
+
+        lqw1.eq(status != null, Dish::getStatus, status)
+                .eq(categoryId != null, Dish::getCategoryId, categoryId);
+
+        List<Dish> dishList = dishMapper.selectList(lqw1);
+
+        List<DishVO> dishVOList = new ArrayList<>();
+
+        for (Dish d : dishList) {
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(d,dishVO);
+
+            //根据菜品id查询对应的口味
+            LambdaQueryWrapper<DishFlavor> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(dish.getId() != null, DishFlavor::getDishId, dish.getId());
+            List<DishFlavor> flavors = dishFlavorMapper.selectList(lqw);
+
+            dishVO.setFlavors(flavors);
+            dishVOList.add(dishVO);
+        }
+
+        return dishVOList;
+    }
+
+    @Override
+    public List<Dish> queryByCategoryId(Integer categoryId) {
+        LambdaQueryWrapper<Dish> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(true, Dish::getCategoryId, categoryId);
+        List<Dish> list = dishMapper.selectList(lqw);
+        return list;
     }
 
 }
