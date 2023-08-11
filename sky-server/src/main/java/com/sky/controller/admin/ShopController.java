@@ -6,6 +6,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,6 +25,7 @@ public class ShopController {
      */
     @PutMapping("/{status}")
     @ApiOperation("商店状态设置")
+    @CacheEvict(cacheNames = "SHOP_STATUS" , allEntries = true)
     public Result setStatus(@PathVariable Integer status) {
         log.info("设置店铺的营业状态为 ： {}", status == 1 ? "营业" : "打烊");
         shopService.setStatus(status);

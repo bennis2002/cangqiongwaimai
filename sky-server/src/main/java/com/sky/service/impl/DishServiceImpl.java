@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,6 +22,7 @@ import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -41,8 +44,12 @@ public class DishServiceImpl implements DishService {
     @Resource
     DishFlavorMapper dishFlavorMapper;
 
+    @Resource
+    StringRedisTemplate stringRedisTemplate;
+
     @Override
     @Transactional
+
     public Result saveWithFlavor(DishDTO dish) {
 
         //向菜品表中插入一条数据
@@ -144,6 +151,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 条件查询菜品和口味
+     *
      * @param dish
      * @return
      */
@@ -152,6 +160,13 @@ public class DishServiceImpl implements DishService {
 
         Integer status = dish.getStatus();
         Long categoryId = dish.getCategoryId();
+
+        //Redis缓存
+        String key = "SKY:DISH:" + categoryId;
+        String s = stringRedisTemplate.opsForValue().get(key);
+        if (s != null && s.length() > 0) {
+            return JSON.parseArray(s, DishVO.class);
+        }
 
         lqw1.eq(status != null, Dish::getStatus, status)
                 .eq(categoryId != null, Dish::getCategoryId, categoryId);
@@ -162,17 +177,18 @@ public class DishServiceImpl implements DishService {
 
         for (Dish d : dishList) {
             DishVO dishVO = new DishVO();
-            BeanUtils.copyProperties(d,dishVO);
+            BeanUtils.copyProperties(d, dishVO);
 
             //根据菜品id查询对应的口味
             LambdaQueryWrapper<DishFlavor> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(dish.getId() != null, DishFlavor::getDishId, dish.getId());
+            lqw.eq(true, DishFlavor::getDishId, d.getId());
             List<DishFlavor> flavors = dishFlavorMapper.selectList(lqw);
 
             dishVO.setFlavors(flavors);
             dishVOList.add(dishVO);
         }
 
+        stringRedisTemplate.opsForValue().set(key , JSON.toJSONString(dishVOList) , 6 , TimeUnit.HOURS);
         return dishVOList;
     }
 
@@ -182,6 +198,15 @@ public class DishServiceImpl implements DishService {
         lqw.eq(true, Dish::getCategoryId, categoryId);
         List<Dish> list = dishMapper.selectList(lqw);
         return list;
+    }
+
+    @Override
+    public void setStatus(Integer status, Integer id) {
+        Dish dish = new Dish();
+        dish.setStatus(status);
+        dish.setId(Long.valueOf(id));
+
+        dishMapper.updateById(dish);
     }
 
 }
