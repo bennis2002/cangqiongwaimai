@@ -21,6 +21,7 @@ import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
 import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
+import io.swagger.annotations.Api;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +38,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
+@Api("套餐管理")
 public class SetmealServiceImpl implements SetmealService {
 
     @Resource

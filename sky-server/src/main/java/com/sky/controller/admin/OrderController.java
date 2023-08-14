@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 
 
 @RestController("adminOrderController")
-@Api("商家订单管理")
+@Api(tags = "商家订单管理")
 @RequestMapping("/admin/order")
 @Slf4j
 public class OrderController {
@@ -85,6 +85,14 @@ public class OrderController {
     public Result complete(@PathVariable Long id) {
         log.info("完成订单 ： {}", id);
         orderService.complete(id);
+        return Result.success();
+    }
+
+
+    @GetMapping("/test/{id}")
+    @ApiOperation("订单测试")
+    public Result test(@PathVariable Long id) {
+        orderService.test(id);
         return Result.success();
     }
 }

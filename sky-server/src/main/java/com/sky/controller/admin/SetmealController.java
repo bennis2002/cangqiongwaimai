@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 @RestController("adminSetmealController")
 @Slf4j
 @RequestMapping("/admin/setmeal")
+@Api(tags = "套餐管理")
 public class SetmealController {
 
     @Resource

@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -15,4 +16,6 @@ public interface OrderMapper extends BaseMapper<Orders> {
 
     @Select("select * from orders where status = #{pendingPayment} and order_time < #{localDateTime} ")
     List<Orders> getByStatusAndTimeLT(Integer pendingPayment, LocalDateTime localDateTime);
+
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime beginTime, LocalDateTime endTime);
 }

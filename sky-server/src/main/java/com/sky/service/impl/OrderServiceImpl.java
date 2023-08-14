@@ -1,6 +1,7 @@
 package com.sky.service.impl;
 
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -19,6 +20,7 @@ import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.*;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.annotation.Order;
@@ -35,6 +37,7 @@ import static com.sky.entity.Orders.*;
 
 @Slf4j
 @Service
+@Api("订单管理")
 public class OrderServiceImpl implements OrderService {
     @Resource
     OrderMapper orderMapper;
@@ -143,7 +146,9 @@ public class OrderServiceImpl implements OrderService {
     public void paySuccess(String outTradeNo) {
 
         // 根据订单号查询订单
-        Orders ordersDB = orderMapper.selectById(outTradeNo);
+        LambdaQueryWrapper<Orders> lqw1 = new LambdaQueryWrapper<>();
+        lqw1.eq(true, Orders::getNumber, outTradeNo);
+        Orders ordersDB = orderMapper.selectOne(lqw1);
 
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
         Orders orders = Orders.builder()
@@ -400,6 +405,16 @@ public class OrderServiceImpl implements OrderService {
 
         //发送请求
         webSocketServer.sendToAllClient(JSON.toJSONString(map));
+    }
+
+    @Override
+    public void test(Long id) {
+        Orders orders = orderMapper.selectById(id);
+        String s = RandomUtil.randomNumbers(10);
+        orders.setNumber(s);
+        orders.setStatus(2);
+        orderMapper.updateById(orders);
+        paySuccess(s);
     }
 
 
