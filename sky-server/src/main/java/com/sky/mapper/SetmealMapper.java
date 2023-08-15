@@ -35,4 +35,11 @@ public interface SetmealMapper extends BaseMapper<Setmeal> {
     List<DishItemVO> getDishItemBySetmealId(Long setmealId);
 
     List<SetmealVO> selectByPage(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /**
+     * 根据条件统计套餐数量
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
 }

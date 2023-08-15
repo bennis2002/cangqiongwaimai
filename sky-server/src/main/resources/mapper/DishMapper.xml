@@ -2,6 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.DishMapper">
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from dish
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+        </where>
+    </select>
     <select id="seleceByPage" resultType="com.sky.vo.DishVO">
         select d.* , c.name as categoryName from dish d left outer join category c on d.category_id = c.id
         <where>
@@ -18,6 +29,7 @@
         order by d.create_time desc
         limit #{page} , #{pageSize}
     </select>
+
     <select id="list" parameterType="Setmeal" resultType="Setmeal">
         select * from setmeal
         <where>
